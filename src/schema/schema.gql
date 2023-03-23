@@ -1,0 +1,79 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateUserInput {
+  active: Boolean = true
+  createdAt: DateTime
+  email: String!
+  name: String!
+  password: String!
+  phoneNumber: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input FilterUserInput {
+  active: Boolean
+  createdAt: DateTime
+  email: String
+  id: Int
+  name: String
+  order: OrderByFilterInput
+  password: String
+  phoneNumber: String
+  updated_at: DateTime
+}
+
+type Mutation {
+  createUser(data: CreateUserInput!): User!
+  deleteUser(id: Float!): User!
+  updateUser(data: UpdateUserInput!, id: Float!): User!
+}
+
+input OrderByFilterInput {
+  key: String! = "id"
+  prefix: String
+  value: String! = "ASC"
+}
+
+type PageInfo {
+  count: Int!
+  currentPage: Int!
+  pagesCount: Int!
+  perPage: Int!
+}
+
+type PaginatedUserResponse {
+  items: [User!]!
+  pagination: PageInfo!
+}
+
+type Query {
+  user(id: Float!): User!
+  userByEmail(email: String!): User!
+  users(currentPage: Int = 1, filters: FilterUserInput!, perPage: Int = 10): PaginatedUserResponse!
+}
+
+input UpdateUserInput {
+  email: String!
+  name: String!
+  password: String!
+  phoneNumber: String!
+  updatedAt: DateTime
+}
+
+type User {
+  active: Boolean!
+  createdAt: DateTime!
+  deletedAt: DateTime!
+  email: String!
+  id: Float!
+  name: String!
+  password: String!
+  phoneNumber: String!
+  updatedAt: DateTime!
+}
