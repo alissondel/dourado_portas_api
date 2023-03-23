@@ -41,7 +41,7 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
-## Test
+## Running the test
 
 ```bash
 # unit tests
@@ -57,6 +57,7 @@ $ yarn run test:cov
 ## Stay in touch
 
 - Author - [Alisson Delatim](https://github.com/alissondel)
+
 
 ## License
 
