@@ -1,6 +1,6 @@
-import { InputType, Field } from "@nestjs/graphql";
+import { InputType, Field, Int } from "@nestjs/graphql";
 
-import { IsEmail, IsNotEmpty, IsString, IsBoolean, IsDate } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, IsBoolean, IsDate, IsNumber } from "class-validator";
 
 @InputType()
 export class CreateUserInput {
@@ -8,6 +8,11 @@ export class CreateUserInput {
   @IsNotEmpty({ message: "Caracteres Invalidos" })
   @Field()
   name: string;
+
+  @IsNumber()
+  @IsNotEmpty({ message: "Numero Inexistente!" })
+  @Field(() => Int)
+  city_id: number;
 
   @IsString()
   @IsNotEmpty({ message: "Caracteres Invalidos" })

@@ -76,12 +76,25 @@ export class UsersService {
   }
 
   async create(data: CreateUserInput): Promise<User> {
-    const { password, active, createdAt, ...rest } = data; //eslint-disable-line
+    const { email, phoneNumber, password, active, createdAt, ...rest } = data; //eslint-disable-line
+
+    const checkedEmail = await this.verifyDuplicityEmail(email);
+    const checkedPhoneNumber = await this.verifyDuplicityPhone(phoneNumber);
+
+    if (checkedEmail) {
+      throw new NotFoundError("Email já existente na base de dados!");
+    }
+
+    if (checkedPhoneNumber) {
+      throw new NotFoundError("Telefone já existente na base de dados!");
+    }
 
     const encryptedPassword = md5(password + process.env.SECRET_PASSWORD);
 
     const createdUser = {
       ...rest,
+      email: email.trim(),
+      phoneNumber: phoneNumber,
       password: encryptedPassword,
       active: true,
       createdAt: new Date(),
@@ -92,18 +105,30 @@ export class UsersService {
   }
 
   async update(id: number, data: UpdateUserInput): Promise<User> {
-    const { password, updatedAt, ...rest } = data; //eslint-disable-line
-
-    const encryptedPassword = md5(password + process.env.SECRET_PASSWORD);
+    const { email, phoneNumber, password, updatedAt, ...rest } = data; //eslint-disable-line
 
     const user = await this.usersRepository.findOne({ where: { id } });
+    const checkedEmail = await this.verifyDuplicityEmail(email);
+    const checkedPhoneNumber = await this.verifyDuplicityPhone(phoneNumber);
 
     if (!user) {
       throw new NotFoundError("Usuario não existe!");
     }
 
+    if (email == checkedEmail) {
+      throw new NotFoundError("Email já existente na base de dados!");
+    }
+
+    if (phoneNumber == checkedPhoneNumber) {
+      throw new NotFoundError("Numero de telefone já existente na base de dados!");
+    }
+
+    const encryptedPassword = md5(password + process.env.SECRET_PASSWORD);
+
     const updatedUser = {
       ...rest,
+      email: email.trim(),
+      phoneNumber: phoneNumber,
       password: encryptedPassword,
       updatedAt: new Date(),
     };
@@ -120,5 +145,23 @@ export class UsersService {
     }
 
     return this.usersRepository.save({ ...userId, ...data });
+  }
+
+  async verifyDuplicityEmail(email: string): Promise<any> {
+    const checkedEmail = await this.usersRepository.findOne({
+      where: {
+        email: email.trim(),
+      },
+    });
+    return checkedEmail;
+  }
+
+  async verifyDuplicityPhone(phoneNumber: string): Promise<any> {
+    const checkedEmail = await this.usersRepository.findOne({
+      where: {
+        phoneNumber,
+      },
+    });
+    return checkedEmail;
   }
 }

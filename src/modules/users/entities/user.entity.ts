@@ -1,7 +1,8 @@
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, Int } from "@nestjs/graphql";
 import PaginatedResponse from "../../paginations/dto/PaginatedResponse";
 
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { City } from "src/modules/cities/entities/city.entity";
 
 @ObjectType("User")
 @Entity()
@@ -13,6 +14,10 @@ export class User {
   @Column()
   @Field()
   name: string;
+
+  @Column()
+  @Field(() => Int)
+  city_id: number;
 
   @Column({ name: "phone_number" })
   @Field()
@@ -41,6 +46,13 @@ export class User {
   @Column({ name: "deleted_at", type: "timestamptz", nullable: true })
   @Field()
   deletedAt: Date;
+
+  @ManyToOne(() => City, city => city.users)
+  @JoinColumn({
+    name: "city_id",
+    referencedColumnName: "id",
+  })
+  city: City;
 }
 
 @ObjectType()

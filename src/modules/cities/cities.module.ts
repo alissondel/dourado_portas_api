@@ -6,8 +6,11 @@ import { CitiesService } from "./cities.service";
 import { CitiesResolver } from "./cities.resolver";
 import { City } from "./entities/city.entity";
 
+// IMPORTS USER
+import { UsersModule } from "../users/users.module";
+
 @Module({
-  imports: [TypeOrmModule.forFeature([City])],
+  imports: [TypeOrmModule.forFeature([City]), UsersModule],
   providers: [CitiesResolver, CitiesService],
   exports: [CitiesService],
 })

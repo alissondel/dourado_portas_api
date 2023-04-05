@@ -1,8 +1,9 @@
 import { ObjectType, Field, Int } from "@nestjs/graphql";
 import PaginatedResponse from "../../paginations/dto/PaginatedResponse";
 
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { State } from "../../states/entities/state.entity";
+import { User } from "src/modules/users/entities/user.entity";
 
 @ObjectType("City")
 @Entity("city")
@@ -41,6 +42,9 @@ export class City {
     referencedColumnName: "id",
   })
   state: State;
+
+  @OneToMany(() => User, user => user.city)
+  users?: User[];
 }
 
 @ObjectType()

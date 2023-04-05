@@ -10,6 +10,9 @@ export class FilterUserInput {
   name!: string;
 
   @Field({ nullable: true })
+  city_id!: number;
+
+  @Field({ nullable: true })
   phoneNumber!: string;
 
   @Field({ nullable: true })

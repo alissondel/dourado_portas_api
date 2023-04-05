@@ -93,7 +93,7 @@ export class StatesService {
   }
 
   async delete(id: number): Promise<State> {
-    const cityId = await this.verifyIfStatehasRelationWithCity(Number(id));
+    const cityId = await this.verifyIfStateHasRelationWithCity(Number(id));
     const stateId = await this.statesRepository.findOne({ where: { id } });
     const data = { deletedAt: new Date(), updatedAt: new Date(), active: false };
 
@@ -108,8 +108,10 @@ export class StatesService {
     return this.statesRepository.save({ ...stateId, ...data });
   }
 
-  async verifyIfStatehasRelationWithCity(id: number): Promise<City> {
-    const city = await this.citiesRepository.citiesRepository.findOne({ where: { state_id: Number(id) } });
+  async verifyIfStateHasRelationWithCity(id: number): Promise<City> {
+    const city = await this.citiesRepository.citiesRepository.findOne({
+      where: { state_id: Number(id) },
+    });
     return city;
   }
 }

@@ -16,11 +16,16 @@ import Paginate from "../../utils/Paginate";
 // IMPORT ERROR
 import { NotFoundError } from "src/common/errors/types/NotFoundError";
 
+// IMPORT USERS
+import { User } from "../users/entities/user.entity";
+import { UsersService } from "../users/users.service";
+
 @Injectable()
 export class CitiesService {
   constructor(
     @InjectRepository(City)
     public citiesRepository: Repository<City>,
+    private usersInject: UsersService,
   ) {}
 
   async findOne(id: number): Promise<City> {
@@ -95,6 +100,7 @@ export class CitiesService {
   }
 
   async delete(id: number): Promise<City> {
+    const user = await this.verifyIfCityHasRelationWithUser(id);
     const cityId = await this.citiesRepository.findOne({ where: { id } });
     const data = { deletedAt: new Date(), updatedAt: new Date(), active: false };
 
@@ -102,6 +108,17 @@ export class CitiesService {
       throw new NotFoundError("Cidade não existe!");
     }
 
+    if (user) {
+      throw new NotFoundError("Não pode remover cidade, pois está vinculado ao usuário!");
+    }
+
     return this.citiesRepository.save({ ...cityId, ...data });
+  }
+
+  async verifyIfCityHasRelationWithUser(id: number): Promise<User> {
+    const user = await this.usersInject.usersRepository.findOne({
+      where: { city_id: Number(id) },
+    });
+    return user;
   }
 }
