@@ -13,7 +13,7 @@ import { NotFoundInterceptor } from "./common/errors/interceptors/notfound.inter
 
 dotenv.config();
 
-const port = normalizePort(process.env.PORT || "3030");
+const port = normalizePort(process.env.PORT || "8080");
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

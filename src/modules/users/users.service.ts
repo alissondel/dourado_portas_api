@@ -56,12 +56,10 @@ export class UsersService {
         ...(filters.phoneNumber && { phoneNumber: Like(`%${filters.phoneNumber}%`) }),
         ...(filters.email && { email: Like(`%${filters.email}%`) }),
         ...(filters.password && { password: Like(`%${filters.password}%`) }),
-        ...(filters.createdAt && {
-          createdAt: Between(filters.createdAt, new Date(filters.createdAt.getTime() + (1000 * 3600 * 24 - 1))),
-        }),
-        ...(filters.createdAt && {
-          updated_at: Between(filters.updated_at, new Date(filters.updated_at.getTime() + (1000 * 3600 * 24 - 1))),
-        }),
+        ...(filters.createdAt &&
+          filters.updatedAt && {
+            createdAt: Between(filters.createdAt, new Date(filters.updatedAt.getTime() + (1000 * 3600 * 24 - 1))),
+          }),
         active: filters.active,
       },
       order: {

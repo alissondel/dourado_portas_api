@@ -2,6 +2,40 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AuthInput {
+  email: String!
+  password: String!
+}
+
+type AuthType {
+  token: String!
+  user: User!
+}
+
+type City {
+  active: Boolean!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  id: Int!
+  name: String!
+  state_id: Int!
+  updatedAt: DateTime
+}
+
+input CreateCityInput {
+  active: Boolean = true
+  createdAt: DateTime
+  name: String!
+  state_id: Int!
+}
+
+input CreateStateInput {
+  active: Boolean = true
+  createdAt: DateTime
+  name: String!
+  uf: String!
+}
+
 input CreateUserInput {
   active: Boolean = true
   createdAt: DateTime
@@ -16,6 +50,26 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input FilterCityInput {
+  active: Boolean
+  createdAt: DateTime
+  id: Int
+  name: String
+  order: OrderByFilterInput
+  state: String
+  updatedAt: DateTime
+}
+
+input FilterStateInput {
+  active: Boolean
+  createdAt: DateTime
+  id: Int
+  name: String
+  order: OrderByFilterInput
+  uf: String
+  updatedAt: DateTime
+}
+
 input FilterUserInput {
   active: Boolean
   createdAt: DateTime
@@ -25,12 +79,19 @@ input FilterUserInput {
   order: OrderByFilterInput
   password: String
   phoneNumber: String
-  updated_at: DateTime
+  updatedAt: DateTime
 }
 
 type Mutation {
+  authenticate(data: AuthInput!): AuthType!
+  createCity(data: CreateCityInput!): City!
+  createState(data: CreateStateInput!): State!
   createUser(data: CreateUserInput!): User!
+  deleteCity(id: Float!): City!
+  deleteState(id: Float!): State!
   deleteUser(id: Float!): User!
+  updateCity(data: UpdateCityInput!, id: Float!): City!
+  updateState(data: UpdateStateInput!, id: Float!): State!
   updateUser(data: UpdateUserInput!, id: Float!): User!
 }
 
@@ -47,15 +108,51 @@ type PageInfo {
   perPage: Int!
 }
 
+type PaginatedCityResponse {
+  items: [City!]!
+  pagination: PageInfo!
+}
+
+type PaginatedStateResponse {
+  items: [State!]!
+  pagination: PageInfo!
+}
+
 type PaginatedUserResponse {
   items: [User!]!
   pagination: PageInfo!
 }
 
 type Query {
+  cities(currentPage: Int = 1, filters: FilterCityInput!, perPage: Int = 10): PaginatedCityResponse!
+  city(id: Float!): City!
+  state(id: Float!): State!
+  states(currentPage: Int = 1, filters: FilterStateInput!, perPage: Int = 10): PaginatedStateResponse!
   user(id: Float!): User!
   userByEmail(email: String!): User!
   users(currentPage: Int = 1, filters: FilterUserInput!, perPage: Int = 10): PaginatedUserResponse!
+}
+
+type State {
+  active: Boolean!
+  createdAt: DateTime!
+  deletedAt: DateTime!
+  id: Int!
+  name: String!
+  uf: String!
+  updatedAt: DateTime!
+}
+
+input UpdateCityInput {
+  name: String!
+  state_id: Int!
+  updatedAt: DateTime
+}
+
+input UpdateStateInput {
+  name: String!
+  uf: String!
+  updatedAt: DateTime
 }
 
 input UpdateUserInput {

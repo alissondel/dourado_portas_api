@@ -12,9 +12,21 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 
-//IMPORT MODULES
+//IMPORT USER
 import { UsersModule } from "./modules/users/users.module";
 import { User } from "./modules/users/entities/user.entity";
+
+//IMPORT AUTH
+import { AuthModule } from "./modules/auth/auth.module";
+import { AuthType } from "./modules/auth/entities/auth.type";
+
+//IMPORT STATE
+import { StatesModule } from "./modules/states/states.module";
+import { State } from "./modules/states/entities/state.entity";
+
+//IMPORT CITY
+import { CitiesModule } from "./modules/cities/cities.module";
+import { City } from "./modules/cities/entities/city.entity";
 
 @Module({
   imports: [
@@ -31,11 +43,14 @@ import { User } from "./modules/users/entities/user.entity";
       database: process.env.DATABASE_NAME,
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
-      entities: [User],
+      entities: [User, AuthType, State, City],
       synchronize: true,
       logging: true,
     }),
     UsersModule,
+    AuthModule,
+    StatesModule,
+    CitiesModule,
   ],
   controllers: [],
   providers: [],
