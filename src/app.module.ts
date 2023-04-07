@@ -28,6 +28,14 @@ import { State } from "./modules/states/entities/state.entity";
 import { CitiesModule } from "./modules/cities/cities.module";
 import { City } from "./modules/cities/entities/city.entity";
 
+//IMPORT BRAND
+import { BrandsModule } from "./modules/brands/brands.module";
+import { Brand } from "./modules/brands/entities/brand.entity";
+
+//IMPORT SUBGROUP
+import { SubgroupsModule } from "./modules/subgroups/subgroups.module";
+import { Subgroup } from "./modules/subgroups/entities/subgroup.entity";
+
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -43,7 +51,7 @@ import { City } from "./modules/cities/entities/city.entity";
       database: process.env.DATABASE_NAME,
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
-      entities: [User, AuthType, State, City],
+      entities: [User, AuthType, State, City, Brand, Subgroup],
       synchronize: true,
       logging: true,
     }),
@@ -51,6 +59,8 @@ import { City } from "./modules/cities/entities/city.entity";
     AuthModule,
     StatesModule,
     CitiesModule,
+    BrandsModule,
+    SubgroupsModule,
   ],
   controllers: [],
   providers: [],

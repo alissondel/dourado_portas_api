@@ -91,12 +91,12 @@ export class CitiesService {
       throw new NotFoundError("Cidade não existe!");
     }
 
-    const updatedState = {
+    const updatedCity = {
       ...rest,
       updatedAt: new Date(),
     };
 
-    return this.citiesRepository.save({ ...city, ...updatedState });
+    return this.citiesRepository.save({ ...city, ...updatedCity });
   }
 
   async delete(id: number): Promise<City> {

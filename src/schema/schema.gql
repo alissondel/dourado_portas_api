@@ -12,6 +12,15 @@ type AuthType {
   user: User!
 }
 
+type Brand {
+  active: Boolean!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  description: String!
+  id: Int!
+  updatedAt: DateTime
+}
+
 type City {
   active: Boolean!
   createdAt: DateTime!
@@ -20,6 +29,12 @@ type City {
   name: String!
   state_id: Int!
   updatedAt: DateTime
+}
+
+input CreateBrandInput {
+  active: Boolean = true
+  createdAt: DateTime
+  description: String!
 }
 
 input CreateCityInput {
@@ -36,6 +51,12 @@ input CreateStateInput {
   uf: String!
 }
 
+input CreateSubgroupInput {
+  active: Boolean = true
+  createdAt: DateTime
+  description: String!
+}
+
 input CreateUserInput {
   active: Boolean = true
   city_id: Int!
@@ -50,6 +71,15 @@ input CreateUserInput {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+input FilterBrandInput {
+  active: Boolean
+  createdAt: DateTime
+  description: String
+  id: Int
+  order: OrderByFilterInput
+  updatedAt: DateTime
+}
 
 input FilterCityInput {
   active: Boolean
@@ -71,6 +101,15 @@ input FilterStateInput {
   updatedAt: DateTime
 }
 
+input FilterSubgroupInput {
+  active: Boolean
+  createdAt: DateTime
+  description: String
+  id: Int
+  order: OrderByFilterInput
+  updatedAt: DateTime
+}
+
 input FilterUserInput {
   active: Boolean
   city_id: Float
@@ -86,14 +125,20 @@ input FilterUserInput {
 
 type Mutation {
   authenticate(data: AuthInput!): AuthType!
+  createBrand(data: CreateBrandInput!): Brand!
   createCity(data: CreateCityInput!): City!
   createState(data: CreateStateInput!): State!
+  createSubgroup(data: CreateSubgroupInput!): Subgroup!
   createUser(data: CreateUserInput!): User!
+  deleteBrand(id: Float!): Brand!
   deleteCity(id: Float!): City!
   deleteState(id: Float!): State!
+  deleteSubgroup(id: Float!): Subgroup!
   deleteUser(id: Float!): User!
+  updateBrand(data: UpdateBrandInput!, id: Float!): Brand!
   updateCity(data: UpdateCityInput!, id: Float!): City!
   updateState(data: UpdateStateInput!, id: Float!): State!
+  updateSubgroup(data: UpdateSubgroupInput!, id: Float!): Subgroup!
   updateUser(data: UpdateUserInput!, id: Float!): User!
 }
 
@@ -110,6 +155,11 @@ type PageInfo {
   perPage: Int!
 }
 
+type PaginatedBrandResponse {
+  items: [Brand!]!
+  pagination: PageInfo!
+}
+
 type PaginatedCityResponse {
   items: [City!]!
   pagination: PageInfo!
@@ -120,16 +170,25 @@ type PaginatedStateResponse {
   pagination: PageInfo!
 }
 
+type PaginatedSubgroupResponse {
+  items: [Subgroup!]!
+  pagination: PageInfo!
+}
+
 type PaginatedUserResponse {
   items: [User!]!
   pagination: PageInfo!
 }
 
 type Query {
+  brand(id: Float!): Brand!
+  brands(currentPage: Int = 1, filters: FilterBrandInput!, perPage: Int = 10): PaginatedBrandResponse!
   cities(currentPage: Int = 1, filters: FilterCityInput!, perPage: Int = 10): PaginatedCityResponse!
   city(id: Float!): City!
   state(id: Float!): State!
   states(currentPage: Int = 1, filters: FilterStateInput!, perPage: Int = 10): PaginatedStateResponse!
+  subgroup(id: Float!): Subgroup!
+  subgroups(currentPage: Int = 1, filters: FilterSubgroupInput!, perPage: Int = 10): PaginatedSubgroupResponse!
   user(id: Float!): User!
   userByEmail(email: String!): User!
   users(currentPage: Int = 1, filters: FilterUserInput!, perPage: Int = 10): PaginatedUserResponse!
@@ -145,6 +204,20 @@ type State {
   updatedAt: DateTime!
 }
 
+type Subgroup {
+  active: Boolean!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  description: String!
+  id: Int!
+  updatedAt: DateTime
+}
+
+input UpdateBrandInput {
+  description: String!
+  updatedAt: DateTime
+}
+
 input UpdateCityInput {
   name: String!
   state_id: Int!
@@ -154,6 +227,11 @@ input UpdateCityInput {
 input UpdateStateInput {
   name: String!
   uf: String!
+  updatedAt: DateTime
+}
+
+input UpdateSubgroupInput {
+  description: String!
   updatedAt: DateTime
 }
 

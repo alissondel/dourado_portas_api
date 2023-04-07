@@ -4,6 +4,7 @@ import { UseGuards } from "@nestjs/common";
 // IMPORTS CITIES
 import { City, PaginatedCityResponse } from "./entities/city.entity";
 import { CitiesService } from "./cities.service";
+import { FilterCityInput } from "./dto/filter-city.input";
 import { CreateCityInput } from "./dto/create-city.input";
 import { UpdateCityInput } from "./dto/update-city.input";
 
@@ -12,7 +13,6 @@ import { PaginationArgs } from "../filters/PaginationArgs";
 
 //IMPORT JWT-AUTH-GUARD
 import { GqlAuthGuard } from "../auth/jwt-auth.guard";
-import { FilterCityInput } from "./dto/filter-city.input";
 
 @Resolver(() => City)
 export class CitiesResolver {
