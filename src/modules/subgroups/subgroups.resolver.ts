@@ -42,6 +42,7 @@ export class SubgroupsResolver {
     return await this.subgroupsService.update(id, data);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Subgroup)
   async deleteSubgroup(@Args("id") id: number) {
     return await this.subgroupsService.delete(id);

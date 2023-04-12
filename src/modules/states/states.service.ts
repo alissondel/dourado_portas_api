@@ -15,8 +15,10 @@ import Paginate from "../../utils/Paginate";
 
 // IMPORT ERROR
 import { NotFoundError } from "src/common/errors/types/NotFoundError";
-import { CitiesService } from "../cities/cities.service";
+
+// IMPORT CITY
 import { City } from "../cities/entities/city.entity";
+import { CitiesService } from "../cities/cities.service";
 
 @Injectable()
 export class StatesService {
@@ -64,10 +66,17 @@ export class StatesService {
   }
 
   async create(data: CreateStateInput): Promise<State> {
-    const { createdAt, ...rest } = data; //eslint-disable-line
+    const { name, createdAt, ...rest } = data; //eslint-disable-line
+
+    const checkedName = await this.verifyDuplicityName(name.trim());
+
+    if (checkedName) {
+      throw new NotFoundError("Nome já existente na base de dados!");
+    }
 
     const createdState = {
       ...rest,
+      name: name.trim(),
       createdAt: new Date(),
     };
 
@@ -76,16 +85,22 @@ export class StatesService {
   }
 
   async update(id: number, data: UpdateStateInput): Promise<State> {
-    const { updatedAt, ...rest } = data; //eslint-disable-line
+    const { name, updatedAt, ...rest } = data; //eslint-disable-line
 
     const state = await this.statesRepository.findOne({ where: { id } });
+    const checkedName = await this.verifyDuplicityName(name.trim());
 
     if (!state) {
       throw new NotFoundError("Estado não existe!");
     }
 
+    if (name == checkedName) {
+      throw new NotFoundError("Nome já existente na base de dados!");
+    }
+
     const updatedState = {
       ...rest,
+      name: name.trim(),
       updatedAt: new Date(),
     };
 
@@ -106,6 +121,15 @@ export class StatesService {
     }
 
     return this.statesRepository.save({ ...stateId, ...data });
+  }
+
+  async verifyDuplicityName(name: string): Promise<any> {
+    const checkedName = await this.statesRepository.findOne({
+      where: {
+        name,
+      },
+    });
+    return checkedName;
   }
 
   async verifyIfStateHasRelationWithCity(id: number): Promise<City> {

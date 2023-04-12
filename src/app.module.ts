@@ -11,6 +11,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 // IMPORT GRAPHQL
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 
 //IMPORT USER
 import { UsersModule } from "./modules/users/users.module";
@@ -36,13 +37,22 @@ import { Brand } from "./modules/brands/entities/brand.entity";
 import { SubgroupsModule } from "./modules/subgroups/subgroups.module";
 import { Subgroup } from "./modules/subgroups/entities/subgroup.entity";
 
+//IMPORT GROUP
+import { Group } from "./modules/groups/entities/group.entity";
+import { GroupsModule } from "./modules/groups/groups.module";
+
+//IMPORT PRODUCT
+import { Product } from "./modules/products/entities/product.entity";
+import { ProductsModule } from "./modules/products/products.module";
+
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), "src/schema/schema.gql"),
       sortSchema: true,
-      playground: true,
+      playground: false,
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     TypeOrmModule.forRoot({
       type: "postgres",
@@ -51,7 +61,7 @@ import { Subgroup } from "./modules/subgroups/entities/subgroup.entity";
       database: process.env.DATABASE_NAME,
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
-      entities: [User, AuthType, State, City, Brand, Subgroup],
+      entities: [User, AuthType, State, City, Brand, Subgroup, Group, Product],
       synchronize: true,
       logging: true,
     }),
@@ -61,6 +71,8 @@ import { Subgroup } from "./modules/subgroups/entities/subgroup.entity";
     CitiesModule,
     BrandsModule,
     SubgroupsModule,
+    GroupsModule,
+    ProductsModule,
   ],
   controllers: [],
   providers: [],

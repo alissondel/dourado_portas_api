@@ -4,9 +4,9 @@ import PaginatedResponse from "../../paginations/dto/PaginatedResponse";
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { Product } from "src/modules/products/entities/product.entity";
 
-@ObjectType("Subgroup")
-@Entity("subgroup")
-export class Subgroup {
+@ObjectType("Group")
+@Entity("group")
+export class Group {
   @PrimaryGeneratedColumn("increment")
   @Field(() => Int)
   id: number;
@@ -31,9 +31,9 @@ export class Subgroup {
   @Field({ nullable: true })
   deletedAt?: Date;
 
-  @OneToMany(() => Product, product => product.subgroup)
+  @OneToMany(() => Product, product => product.group)
   products?: Product[];
 }
 
 @ObjectType()
-export class PaginatedSubgroupResponse extends PaginatedResponse(Subgroup) {}
+export class PaginatedGroupResponse extends PaginatedResponse(Group) {}

@@ -42,6 +42,7 @@ export class CitiesResolver {
     return await this.citiesService.update(id, data);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => City)
   async deleteCity(@Args("id") id: number) {
     return await this.citiesService.delete(id);

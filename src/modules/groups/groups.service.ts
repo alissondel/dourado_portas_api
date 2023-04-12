@@ -2,11 +2,11 @@ import { Injectable, Inject, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, Between, ILike } from "typeorm";
 
-// IMPORT BRANDS
-import { Brand } from "./entities/brand.entity";
-import { FilterBrandInput } from "./dto/filter-brand.input";
-import { CreateBrandInput } from "./dto/create-brand.input";
-import { UpdateBrandInput } from "./dto/update-brand.input";
+// IMPORT GROUP
+import { Group } from "./entities/group.entity";
+import { FilterGroupInput } from "./dto/filter-group.input";
+import { CreateGroupInput } from "./dto/create-group.input";
+import { UpdateGroupInput } from "./dto/update-group.input";
 
 // IMPORT PAGINATE
 import { PageInfo } from "../paginations/entities/pagination.entity";
@@ -21,26 +21,26 @@ import { Product } from "../products/entities/product.entity";
 import { ProductsService } from "../products/products.service";
 
 @Injectable()
-export class BrandsService {
+export class GroupsService {
   constructor(
-    @InjectRepository(Brand)
+    @InjectRepository(Group)
     @Inject(forwardRef(() => ProductsService))
-    public brandsRepository: Repository<Brand>,
+    public groupsRepository: Repository<Group>,
     private productsRepository: ProductsService,
   ) {}
 
-  async findOne(id: number): Promise<Brand> {
-    const brandId = await this.brandsRepository.findOne({ where: { id } });
+  async findOne(id: number): Promise<Group> {
+    const groupId = await this.groupsRepository.findOne({ where: { id } });
 
-    if (!brandId) {
-      throw new NotFoundError("Marca não existe!");
+    if (!groupId) {
+      throw new NotFoundError("Grupo não existe!");
     }
 
-    return brandId;
+    return groupId;
   }
 
-  async findAll({ perPage, currentPage }: PaginationArgs, filters: FilterBrandInput): Promise<any> {
-    const [items, count]: any = await this.brandsRepository.findAndCount({
+  async findAll({ perPage, currentPage }: PaginationArgs, filters: FilterGroupInput): Promise<any> {
+    const [items, count]: any = await this.groupsRepository.findAndCount({
       skip: perPage * (currentPage - 1),
       take: perPage,
       where: {
@@ -65,7 +65,7 @@ export class BrandsService {
     };
   }
 
-  async create(data: CreateBrandInput): Promise<Brand> {
+  async create(data: CreateGroupInput): Promise<Group> {
     const { description, createdAt, ...rest } = data; //eslint-disable-line
 
     const checkedDescription = await this.verifyDuplicityDescription(description.trim());
@@ -74,69 +74,68 @@ export class BrandsService {
       throw new NotFoundError("Descrição já existente na base de dados!");
     }
 
-    const createdBrand = {
+    const createdGroup = {
       ...rest,
       description: description.trim(),
       createdAt: new Date(),
     };
 
-    const brand = await this.brandsRepository.create(createdBrand);
-    return this.brandsRepository.save(brand);
+    const group = await this.groupsRepository.create(createdGroup);
+    return this.groupsRepository.save(group);
   }
 
-  async update(id: number, data: UpdateBrandInput): Promise<Brand> {
+  async update(id: number, data: UpdateGroupInput): Promise<Group> {
     const { description, updatedAt, ...rest } = data; //eslint-disable-line
 
-    const brand = await this.brandsRepository.findOne({ where: { id } });
-    const checkedDescription = await this.verifyDuplicityDescription(description);
+    const group = await this.groupsRepository.findOne({ where: { id } });
+    const checkedDescription = await this.verifyDuplicityDescription(description.trim());
 
-    if (!brand) {
-      throw new NotFoundError("Marca não existe!");
+    if (!group) {
+      throw new NotFoundError("Grupo não existe!");
     }
 
     if (description == checkedDescription) {
       throw new NotFoundError("Descrição já existente na base de dados!");
     }
 
-    const updatedBrand = {
+    const updatedGroup = {
       ...rest,
       description: description.trim(),
       updatedAt: new Date(),
     };
 
-    return this.brandsRepository.save({ ...brand, ...updatedBrand });
+    return this.groupsRepository.save({ ...group, ...updatedGroup });
   }
 
-  async delete(id: number): Promise<Brand> {
-    const brandId = await this.brandsRepository.findOne({ where: { id } });
-    const productId = await this.verifyIfProductHasRelationWithBrand(id);
+  async delete(id: number): Promise<Group> {
+    const groupId = await this.groupsRepository.findOne({ where: { id } });
+    const productId = await this.verifyIfProductHasRelationWithGroup(id);
     const data = { deletedAt: new Date(), updatedAt: new Date(), active: false };
 
-    if (!brandId) {
-      throw new NotFoundError("Marca não existe!");
+    if (!groupId) {
+      throw new NotFoundError("Grupo não existe!");
     }
 
     if (productId) {
-      throw new NotFoundError("Não pode remover marca, pois está vinculado a um produto!");
+      throw new NotFoundError("Não pode remover grupo, pois está vinculado a um produto!");
     }
 
-    return this.brandsRepository.save({ ...brandId, ...data });
+    return this.groupsRepository.save({ ...groupId, ...data });
   }
 
   async verifyDuplicityDescription(description: string): Promise<any> {
-    const checkedDescription = await this.brandsRepository.findOne({
+    const checkedDescription = await this.groupsRepository.findOne({
       where: {
         description,
       },
     });
-
     return checkedDescription;
   }
 
-  async verifyIfProductHasRelationWithBrand(id: number): Promise<Product> {
+  async verifyIfProductHasRelationWithGroup(id: number): Promise<Product> {
     const product = await this.productsRepository.productsRepository.findOne({
       where: {
-        brand_id: Number(id),
+        group_id: Number(id),
         active: true,
       },
     });

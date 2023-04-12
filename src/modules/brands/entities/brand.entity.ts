@@ -1,7 +1,8 @@
 import { ObjectType, Field, Int } from "@nestjs/graphql";
 import PaginatedResponse from "../../paginations/dto/PaginatedResponse";
 
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Product } from "src/modules/products/entities/product.entity";
 
 @ObjectType("Brand")
 @Entity("brand")
@@ -29,6 +30,9 @@ export class Brand {
   @Column({ name: "deleted_at", type: "timestamptz", nullable: true })
   @Field({ nullable: true })
   deletedAt?: Date;
+
+  @OneToMany(() => Product, product => product.brand)
+  products?: Product[];
 }
 
 @ObjectType()

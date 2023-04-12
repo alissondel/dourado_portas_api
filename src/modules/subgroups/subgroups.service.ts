@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Inject, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, Between, ILike } from "typeorm";
 
@@ -16,11 +16,17 @@ import Paginate from "../../utils/Paginate";
 // IMPORT ERROR
 import { NotFoundError } from "src/common/errors/types/NotFoundError";
 
+// IMPORT PRODUCTS
+import { Product } from "../products/entities/product.entity";
+import { ProductsService } from "../products/products.service";
+
 @Injectable()
 export class SubgroupsService {
   constructor(
     @InjectRepository(Subgroup)
+    @Inject(forwardRef(() => ProductsService))
     public subgroupsRepository: Repository<Subgroup>,
+    private productsRepository: ProductsService,
   ) {}
 
   async findOne(id: number): Promise<Subgroup> {
@@ -60,28 +66,41 @@ export class SubgroupsService {
   }
 
   async create(data: CreateSubgroupInput): Promise<Subgroup> {
-    const { createdAt, ...rest } = data; //eslint-disable-line
+    const { description, createdAt, ...rest } = data; //eslint-disable-line
+
+    const checkedDescription = await this.verifyDuplicityDescription(description.trim());
+
+    if (checkedDescription) {
+      throw new NotFoundError("Descrição já existente na base de dados!");
+    }
 
     const createdSubgroup = {
       ...rest,
+      description: description.trim(),
       createdAt: new Date(),
     };
 
-    const brand = await this.subgroupsRepository.create(createdSubgroup);
-    return this.subgroupsRepository.save(brand);
+    const subgroup = await this.subgroupsRepository.create(createdSubgroup);
+    return this.subgroupsRepository.save(subgroup);
   }
 
   async update(id: number, data: UpdateSubgroupInput): Promise<Subgroup> {
-    const { updatedAt, ...rest } = data; //eslint-disable-line
+    const { description, updatedAt, ...rest } = data; //eslint-disable-line
 
     const subgroup = await this.subgroupsRepository.findOne({ where: { id } });
+    const checkedDescription = await this.verifyDuplicityDescription(description.trim());
 
     if (!subgroup) {
-      throw new NotFoundError("Marca não existe!");
+      throw new NotFoundError("Sub Grupo não existe!");
+    }
+
+    if (description == checkedDescription) {
+      throw new NotFoundError("Descrição já existente na base de dados!");
     }
 
     const updatedSubgroup = {
       ...rest,
+      description: description.trim(),
       updatedAt: new Date(),
     };
 
@@ -90,12 +109,37 @@ export class SubgroupsService {
 
   async delete(id: number): Promise<Subgroup> {
     const subgroupId = await this.subgroupsRepository.findOne({ where: { id } });
+    const productId = await this.verifyIfProductHasRelationWithsubgroup(id);
     const data = { deletedAt: new Date(), updatedAt: new Date(), active: false };
 
     if (!subgroupId) {
-      throw new NotFoundError("Cidade não existe!");
+      throw new NotFoundError("Sub grupo não existe!");
+    }
+
+    if (productId) {
+      throw new NotFoundError("Não pode remover subgroup, pois está vinculado a um produto");
     }
 
     return this.subgroupsRepository.save({ ...subgroupId, ...data });
+  }
+
+  async verifyDuplicityDescription(description: string): Promise<any> {
+    const checkedDescription = await this.subgroupsRepository.findOne({
+      where: {
+        description,
+      },
+    });
+    return checkedDescription;
+  }
+
+  async verifyIfProductHasRelationWithsubgroup(id: number): Promise<Product> {
+    const product = await this.productsRepository.productsRepository.findOne({
+      where: {
+        subgroup_id: Number(id),
+        active: true,
+      },
+    });
+
+    return product;
   }
 }

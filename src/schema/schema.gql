@@ -44,6 +44,33 @@ input CreateCityInput {
   state_id: Int!
 }
 
+input CreateGroupInput {
+  active: Boolean = true
+  createdAt: DateTime
+  description: String!
+}
+
+input CreateProductInput {
+  active: Boolean = true
+  brand_id: Int!
+  code: String!
+  color: String!
+  createdAt: DateTime
+  description: String!
+  frameWidth: Float!
+  group_id: Int!
+  height: Float!
+  length: Float!
+  price: Float!
+  subgroup_id: Int!
+  thickness: Float!
+  typeWood: String!
+  unity: Float!
+  warranty: String!
+  weight: Float!
+  width: Float!
+}
+
 input CreateStateInput {
   active: Boolean = true
   createdAt: DateTime
@@ -91,6 +118,40 @@ input FilterCityInput {
   updatedAt: DateTime
 }
 
+input FilterGroupInput {
+  active: Boolean
+  createdAt: DateTime
+  description: String
+  id: Int
+  order: OrderByFilterInput
+  updatedAt: DateTime
+}
+
+input FilterProductInput {
+  active: Boolean
+  code: String
+  color: String
+  createdAt: DateTime
+  description: String
+  frameWidth: Float
+  height: Float
+  id: Int
+  id_brand: Int
+  id_group: Int
+  id_subgroup: Int
+  length: Float
+  order: OrderByFilterInput
+  price: Float
+  state: String
+  thickness: Float
+  typeWood: String
+  unity: Float
+  updatedAt: DateTime
+  warranty: String
+  weight: Float
+  width: Float
+}
+
 input FilterStateInput {
   active: Boolean
   createdAt: DateTime
@@ -123,20 +184,35 @@ input FilterUserInput {
   updatedAt: DateTime
 }
 
+type Group {
+  active: Boolean!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  description: String!
+  id: Int!
+  updatedAt: DateTime
+}
+
 type Mutation {
   authenticate(data: AuthInput!): AuthType!
   createBrand(data: CreateBrandInput!): Brand!
   createCity(data: CreateCityInput!): City!
+  createGroup(data: CreateGroupInput!): Group!
+  createProduct(data: CreateProductInput!): Product!
   createState(data: CreateStateInput!): State!
   createSubgroup(data: CreateSubgroupInput!): Subgroup!
   createUser(data: CreateUserInput!): User!
   deleteBrand(id: Float!): Brand!
   deleteCity(id: Float!): City!
+  deleteGroup(id: Float!): Group!
+  deleteProduct(id: Float!): Product!
   deleteState(id: Float!): State!
   deleteSubgroup(id: Float!): Subgroup!
   deleteUser(id: Float!): User!
   updateBrand(data: UpdateBrandInput!, id: Float!): Brand!
   updateCity(data: UpdateCityInput!, id: Float!): City!
+  updateGroup(data: UpdateGroupInput!, id: Float!): Group!
+  updateProduct(data: UpdateProductInput!, id: Float!): Product!
   updateState(data: UpdateStateInput!, id: Float!): State!
   updateSubgroup(data: UpdateSubgroupInput!, id: Float!): Subgroup!
   updateUser(data: UpdateUserInput!, id: Float!): User!
@@ -165,6 +241,16 @@ type PaginatedCityResponse {
   pagination: PageInfo!
 }
 
+type PaginatedGroupResponse {
+  items: [Group!]!
+  pagination: PageInfo!
+}
+
+type PaginatedProductResponse {
+  items: [Product!]!
+  pagination: PageInfo!
+}
+
 type PaginatedStateResponse {
   items: [State!]!
   pagination: PageInfo!
@@ -180,11 +266,39 @@ type PaginatedUserResponse {
   pagination: PageInfo!
 }
 
+type Product {
+  active: Boolean!
+  brand_id: Int!
+  code: String!
+  color: String!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  description: String!
+  frameWidth: Float!
+  group_id: Int!
+  height: Float!
+  id: Int!
+  length: Float!
+  price: Float!
+  subgroup_id: Int!
+  thickness: Float!
+  typeWood: String!
+  unity: Float!
+  updatedAt: DateTime
+  warranty: String!
+  weight: Float!
+  width: Float!
+}
+
 type Query {
   brand(id: Float!): Brand!
   brands(currentPage: Int = 1, filters: FilterBrandInput!, perPage: Int = 10): PaginatedBrandResponse!
   cities(currentPage: Int = 1, filters: FilterCityInput!, perPage: Int = 10): PaginatedCityResponse!
   city(id: Float!): City!
+  group(id: Float!): Group!
+  groups(currentPage: Int = 1, filters: FilterGroupInput!, perPage: Int = 10): PaginatedGroupResponse!
+  product(id: Float!): Product!
+  products(currentPage: Int = 1, filters: FilterProductInput!, perPage: Int = 10): PaginatedProductResponse!
   state(id: Float!): State!
   states(currentPage: Int = 1, filters: FilterStateInput!, perPage: Int = 10): PaginatedStateResponse!
   subgroup(id: Float!): Subgroup!
@@ -222,6 +336,31 @@ input UpdateCityInput {
   name: String!
   state_id: Int!
   updatedAt: DateTime
+}
+
+input UpdateGroupInput {
+  description: String!
+  updatedAt: DateTime
+}
+
+input UpdateProductInput {
+  brand_id: Int
+  code: String
+  color: String
+  description: String
+  frameWidth: Float
+  group_id: Int
+  height: Float
+  length: Float
+  price: Float
+  subgroup_id: Int
+  thickness: Float
+  typeWood: String
+  unity: Float
+  updatedAt: DateTime
+  warranty: String
+  weight: Float
+  width: Float
 }
 
 input UpdateStateInput {

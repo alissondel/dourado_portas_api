@@ -70,11 +70,18 @@ export class CitiesService {
     };
   }
 
-  async create(data: CreateCityInput) {
-    const { createdAt, ...rest } = data; //eslint-disable-line
+  async create(data: CreateCityInput): Promise<City> {
+    const { name, createdAt, ...rest } = data; //eslint-disable-line
+
+    const checkedName = await this.verifyDuplicityName(name.trim());
+
+    if (checkedName) {
+      throw new NotFoundError("Nome já existente na base de dados!");
+    }
 
     const createdCity = {
       ...rest,
+      name: name.trim(),
       createdAt: new Date(),
     };
 
@@ -83,16 +90,22 @@ export class CitiesService {
   }
 
   async update(id: number, data: UpdateCityInput): Promise<City> {
-    const { updatedAt, ...rest } = data; //eslint-disable-line
+    const { name, updatedAt, ...rest } = data; //eslint-disable-line
 
     const city = await this.citiesRepository.findOne({ where: { id } });
+    const checkedName = await this.verifyDuplicityName(name.trim());
 
     if (!city) {
       throw new NotFoundError("Cidade não existe!");
     }
 
+    if (name == checkedName) {
+      throw new NotFoundError("Nome já existente na base de dados!");
+    }
+
     const updatedCity = {
       ...rest,
+      name: name.trim(),
       updatedAt: new Date(),
     };
 
@@ -113,6 +126,15 @@ export class CitiesService {
     }
 
     return this.citiesRepository.save({ ...cityId, ...data });
+  }
+
+  async verifyDuplicityName(name: string): Promise<any> {
+    const checkedName = await this.citiesRepository.findOne({
+      where: {
+        name,
+      },
+    });
+    return checkedName;
   }
 
   async verifyIfCityHasRelationWithUser(id: number): Promise<User> {
