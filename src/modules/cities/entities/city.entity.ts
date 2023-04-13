@@ -41,6 +41,7 @@ export class City {
     name: "state_id",
     referencedColumnName: "id",
   })
+  @Field(() => State)
   state: State;
 
   @OneToMany(() => User, user => user.city)

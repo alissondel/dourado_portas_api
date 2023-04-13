@@ -27,6 +27,7 @@ type City {
   deletedAt: DateTime
   id: Int!
   name: String!
+  state: State!
   state_id: Int!
   updatedAt: DateTime
 }
@@ -268,6 +269,7 @@ type PaginatedUserResponse {
 
 type Product {
   active: Boolean!
+  brand: Brand!
   brand_id: Int!
   code: String!
   color: String!
@@ -275,11 +277,13 @@ type Product {
   deletedAt: DateTime
   description: String!
   frameWidth: Float!
+  group: Group!
   group_id: Int!
   height: Float!
   id: Int!
   length: Float!
   price: Float!
+  subgroup: Subgroup!
   subgroup_id: Int!
   thickness: Float!
   typeWood: String!
@@ -385,6 +389,7 @@ input UpdateUserInput {
 
 type User {
   active: Boolean!
+  city: City!
   city_id: Int!
   createdAt: DateTime!
   deletedAt: DateTime!

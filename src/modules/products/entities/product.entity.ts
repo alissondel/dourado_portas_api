@@ -99,6 +99,7 @@ export class Product {
     name: "brand_id",
     referencedColumnName: "id",
   })
+  @Field(() => Brand)
   brand: Brand;
 
   @ManyToOne(() => Subgroup, subgroup => subgroup.products)
@@ -106,6 +107,7 @@ export class Product {
     name: "subgroup_id",
     referencedColumnName: "id",
   })
+  @Field(() => Subgroup)
   subgroup: Subgroup;
 
   @ManyToOne(() => Group, group => group.products)
@@ -113,6 +115,7 @@ export class Product {
     name: "group_id",
     referencedColumnName: "id",
   })
+  @Field(() => Group)
   group: Group;
 }
 

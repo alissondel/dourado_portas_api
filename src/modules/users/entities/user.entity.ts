@@ -52,6 +52,7 @@ export class User {
     name: "city_id",
     referencedColumnName: "id",
   })
+  @Field(() => City)
   city: City;
 }
 
